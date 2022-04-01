@@ -15,5 +15,5 @@ def client():
             db.create_all()
 
             yield client
+            db.session.rollback()
             db.session.remove()
-            db.drop_all()

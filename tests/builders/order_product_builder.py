@@ -1,5 +1,7 @@
 from app import db
 from app.features.orders.models.order_product import OrderProduct
+from tests.builders.order_builder import OrderBuilder
+from tests.builders.product_builder import ProductBuilder
 
 
 class OrderProductBuilder:
@@ -17,6 +19,12 @@ class OrderProductBuilder:
         return self
 
     def build(self):
+        if self.__model.product_id is None:
+            self.__model.product_id = ProductBuilder().build().id
+
+        if self.__model.order_id is None:
+            self.__model.order_id = OrderBuilder().build().id
+
         db.session.add(self.__model)
         db.session.commit()
 

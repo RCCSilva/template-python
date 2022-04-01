@@ -4,7 +4,9 @@ from app.features.orders.models.product import Product
 
 class ProductBuilder:
     def __init__(self):
-        self.__model = Product()
+        self.__model = Product(
+            name='Test'
+        )
 
     def with_name(self, name: str):
         self.__model.name = name
