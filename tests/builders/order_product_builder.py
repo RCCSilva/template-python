@@ -7,7 +7,7 @@ from tests.builders.product_builder import ProductBuilder
 class OrderProductBuilder:
     def __init__(self):
         self.__model = OrderProduct(
-            price=10
+            price=10.0
         )
 
     def with_order_id(self, order_id: int):

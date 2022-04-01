@@ -20,7 +20,7 @@ def test_get_products_given_products_return_products(client):
     # Assert
     assert response.status_code == 200
 
-    assert len(response.json['items']) > 1
+    assert len(response.json['items']) >= 1
     assert response.json['items'][-1]['name'] == p1.name
 
 
