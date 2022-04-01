@@ -1,4 +1,5 @@
 import json
+import pytest
 
 import responses
 
@@ -51,6 +52,40 @@ def test_sync_order_given_existing_order(client):
     response = client.post(f'/v1/orders/{order.id}/sync')
 
     # Assert
+    # expect(response.status_code).toBe(200)
     assert response.status_code == 200
     body_json = json.loads(responses.calls[-1].request.body.decode('utf-8'))
     assert body_json['id'] == order.id
+
+
+@responses.activate
+@pytest.mark.parametrize('status_code', [400, 404, 500])
+def test_sync_order_given_error_response_return_error(client, status_code):
+    # Arrange
+    order = OrderBuilder() \
+        .build()
+
+    responses.add(responses.POST, f'http://supertest', status=status_code)
+
+    # Act
+    response = client.post(f'/v1/orders/{order.id}/sync')
+
+    # Assert
+    assert response.status_code == 500
+    body_json = json.loads(responses.calls[-1].request.body.decode('utf-8'))
+    assert body_json['id'] == order.id
+
+
+def test_get_product(client):
+    # Arrange
+    p1 = ProductBuilder() \
+        .with_name('Leite de Condensado!') \
+        .with_base_price(100) \
+        .build()
+
+    # Act
+    response = client.get(f'/v1/orders/products/{p1.id}')
+
+    # Assert
+    assert response.status_code == 200
+    assert response.json['name'] == p1.name

@@ -21,3 +21,4 @@ def test_create_order_given_product(app):
 
     # Assert
     assert order_product.price == 30
+    # assert discount_service.get_product_discount.assert_called_once_with(product)

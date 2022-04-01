@@ -28,6 +28,16 @@ def delete_order_product(order_product_id: int):
 def sync_order(order_id: int):
     order = Order.query.get(order_id)
 
-    requests.post('http://supertest', json=order.to_dict())
+    response = requests.post('http://supertest', json=order.to_dict())
+
+    if not response.ok:
+        return '', 500
 
     return '', 200
+
+
+@bp.route('/products/<int:product_id>')
+def get_product(product_id: int):
+    product = Product.query.get(product_id)
+
+    return product.to_dict()
