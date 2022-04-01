@@ -9,7 +9,7 @@ class Order(db.Model):
 
     id = Column(Integer, primary_key=True)
 
-    products = relationship('OrderProduct')
+    products = relationship('OrderProduct', overlaps='order')
 
     def to_dict(self):
         return {
