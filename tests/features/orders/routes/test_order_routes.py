@@ -1,5 +1,10 @@
+import json
+
+import responses
+
 from app import db
 from app.features.orders.models.order_product import OrderProduct
+from tests.builders.order_builder import OrderBuilder
 from tests.builders.order_product_builder import OrderProductBuilder
 from tests.builders.product_builder import ProductBuilder
 
@@ -34,3 +39,21 @@ def test_delete_order_product_given_existing_order_product_delete_product(client
 
     order_product_db = OrderProduct.query.get(order_product.id)
     assert order_product_db is None
+
+
+@responses.activate
+def test_sync_order_given_existing_order(client):
+    # Arrange
+    order = OrderBuilder() \
+        .build()
+
+    responses.add(responses.POST, f'http://supertest', status=200)
+
+    # Act
+    response = client.post(f'/v1/orders/{order.id}/sync')
+    db.session.rollback()
+
+    # Assert
+    assert response.status_code == 200
+    body_json = json.loads(responses.calls[-1].request.body.decode('utf-8'))
+    assert body_json['id'] == order.id
