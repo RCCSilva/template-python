@@ -27,6 +27,7 @@ def delete_order_product(order_product_id: int):
 @bp.route('/<int:order_id>/sync', methods=['POST'])
 def sync_order(order_id: int):
     order = Order.query.get(order_id)
-    response = requests.post('http://supertest', json=order.to_dict())
 
-    return '', response.status_code
+    requests.post('http://supertest', json=order.to_dict())
+
+    return '', 200

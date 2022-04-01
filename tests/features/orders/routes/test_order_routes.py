@@ -2,7 +2,6 @@ import json
 
 import responses
 
-from app import db
 from app.features.orders.models.order_product import OrderProduct
 from tests.builders.order_builder import OrderBuilder
 from tests.builders.order_product_builder import OrderProductBuilder
@@ -21,8 +20,8 @@ def test_get_products_given_products_return_products(client):
     # Assert
     assert response.status_code == 200
 
-    assert len(response.json['items']) == 1
-    assert response.json['items'][0]['name'] == p1.name
+    assert len(response.json['items']) > 1
+    assert response.json['items'][-1]['name'] == p1.name
 
 
 def test_delete_order_product_given_existing_order_product_delete_product(client):
@@ -32,7 +31,6 @@ def test_delete_order_product_given_existing_order_product_delete_product(client
 
     # Act
     response = client.delete(f'/v1/orders/order-products/{order_product.id}')
-    db.session.rollback()
 
     # Assert
     assert response.status_code == 200
@@ -51,7 +49,6 @@ def test_sync_order_given_existing_order(client):
 
     # Act
     response = client.post(f'/v1/orders/{order.id}/sync')
-    db.session.rollback()
 
     # Assert
     assert response.status_code == 200
